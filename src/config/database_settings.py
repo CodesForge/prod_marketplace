@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     DB_PORT: str
     
     @property
-    def DB_URL() -> str:
+    def DB_URL(self) -> str:
         return (
             f"postgresql+asyncpg://"
             f"{self.DB_USER}:{self.DB_PASS}@"
