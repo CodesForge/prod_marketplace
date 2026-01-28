@@ -1,0 +1,23 @@
+from pydantic import BaseModel, Field, EmailStr
+
+class Feedback(BaseModel):
+    name: str = Field(
+        min_length=3,
+        max_length=32,
+        description="Имя пользователя",
+        examples=["Вадим"],
+    )
+    email: EmailStr | None
+    phone: str | None
+    type_of_organization: str = Field(
+        min_length=5,
+        max_length=128,
+        description="Название организации",
+        examples=["ООО Тмыв денег"]
+    ) 
+    comment: str = Field(
+        min_length=10,
+        max_length=512,
+        description="Комментарий от пользователя",
+        examples=["Добавьте настоящую оптлату на сайт"]
+    )
