@@ -1,4 +1,9 @@
+"""Application logging configuration.
+
+Configures the root logger format and exposes a module-level logger instance.
+"""
 import logging
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -7,4 +12,4 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-logger.info("Логер запущен")
+"""Module logger instance to be imported and used across the application."""

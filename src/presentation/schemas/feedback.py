@@ -1,6 +1,11 @@
 from pydantic import BaseModel, Field, EmailStr
 
 class Feedback(BaseModel):
+    """Feedback form payload.
+
+    Represents a user's feedback submission, including optional contact details.
+    Field metadata is used by FastAPI/OpenAPI for documentation and validation.
+    """
     name: str = Field(
         min_length=3,
         max_length=32,
