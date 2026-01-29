@@ -24,5 +24,5 @@ class Feedback(BaseModel):
         min_length=10,
         max_length=512,
         description="Комментарий от пользователя",
-        examples=["Добавьте настоящую оптлату на сайт"]
+        examples=["Добавьте настоящую оплату на сайт"]
     )

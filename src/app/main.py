@@ -10,6 +10,7 @@ from src.infrastructure.db.session import DataBaseConfig
 from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.db.models.feedback import FeedbackOrm
 from src.infrastructure.log.logger import logger
+from src.presentation.api.routes.feedback import feedback_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
     yield
     await DataBaseConfig.disconnect()
     logger.info("База данных отключена")
+
 app = FastAPI(lifespan=lifespan)
 
-
+app.include_router(feedback_router)
