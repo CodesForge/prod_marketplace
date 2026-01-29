@@ -5,6 +5,7 @@ Exposes `app` for ASGI servers and manages DB connection lifecycle.
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.infrastructure.db.session import DataBaseConfig
 from src.infrastructure.db.models.admin import AdminsOrm
@@ -24,3 +25,11 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(feedback_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],           
+    allow_credentials=False,     
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

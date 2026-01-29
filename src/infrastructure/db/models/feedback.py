@@ -12,6 +12,6 @@ class FeedbackOrm(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(32))
-    contact: Mapped[str] = mapped_column(String(32), nullable=False)
+    contact: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
     type_of_organization: Mapped[str] = mapped_column(String(128), nullable=False)
     comment: Mapped[str] = mapped_column(String(512), nullable=False)
