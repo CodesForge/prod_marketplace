@@ -12,8 +12,8 @@ class Feedback(BaseModel):
         description="Имя пользователя",
         examples=["Вадим"],
     )
-    email: EmailStr | None
-    phone: str | None
+    email: EmailStr | None = None
+    phone: str | None = None
     type_of_organization: str = Field(
         min_length=5,
         max_length=128,
