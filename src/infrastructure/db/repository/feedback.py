@@ -16,8 +16,7 @@ class FeedbackRepository:
         try:
             new_feedback = FeedbackOrm(
                 name = feedback.name,
-                email = feedback.email,
-                phone = feedback.phone,
+                contact = feedback.contact,
                 type_of_organization = feedback.type_of_organization,
                 comment = feedback.comment
             )
