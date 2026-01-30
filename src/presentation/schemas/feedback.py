@@ -23,7 +23,7 @@ class Feedback(BaseModel):
         max_length=128,
         description="Название организации",
         examples=["ООО Тмыв денег"]
-    ) 
+    )
     comment: str = Field(
         min_length=10,
         max_length=512,
