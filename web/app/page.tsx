@@ -6,6 +6,10 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Server, Boxes, PawPrint, CalendarCheck, CircleCheck, Ban, Leaf, ArrowRight, HeartPulse } from "lucide-react"
 import { useState } from "react"
 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { FeedbackTypeData, FeedbackSchema } from "@/schemas/user"
 import dog6 from "@/images/dog6.png"
 import cat3 from "@/images/cat3.png"
 import dog5 from "@/images/dog5.png"
@@ -19,31 +23,83 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 
 export default function Page() {
+    const [error_result, setError_result] = useState('');
+    const [result, setResult] = useState('')
+    const [success, setSuccess] = useState(false)
+    const [send_error, setSend_error] = useState(false)
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FeedbackTypeData>({
+        resolver: zodResolver(FeedbackSchema),
+    })
+
+    const SendFeedbackData = async (data: FeedbackTypeData) => {
+        try {
+            setSuccess(false)
+            setSend_error(false)
+            const response = await fetch("/api/feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            const result = await response.json()
+            if (response.ok) {
+                setResult(result)
+                setSuccess(true);
+            }
+            console.log("Ответ от сервера:", result)
+        } catch ( error ){
+            setSend_error(true);
+            setError_result(result);
+            console.log("Error:", error);
+        } finally {
+            reset();
+        }
+    }
+
    return(
     <div className="flex min-h-screen justify-start items-start p-6 flex-col gap-10">
         <div className="bg-[#E5E5E5] w-full rounded-[10px] flex flex-row">
             <div className="w-1/3 flex">
     <div className="mt-20">
-      <Image src={dog} className="ml-55 h-150 w-160" alt="dog.png" />
+      <Image src={dog} className="ml-55 h-150 w-160 object-cover flex shrink-0" alt="dog.png" />
     </div>
   </div>
             <div className="flex w-full justify-items-center items-center flex-col gap-5">
-                <div className="flex flex-row gap-6 mt-5">
-                    <div className="bg-[#F3F4F6] rounded-[7px] flex items-center">
-                        <Button className="bg-[#F3F4F6] text-neutral-800 p-7">О нас</Button>
-                        <Button className="bg-[#F3F4F6] text-neutral-800 p-7">Продукты</Button>
-                        <Button className="bg-[#F3F4F6] text-neutral-800 p-7">Состав</Button>
-                        <Button className="bg-[#F3F4F6] text-neutral-800 p-7">FAQ</Button>
+                <div className="flex flex-wrap items-center gap-6 mt-5">
+                    <div className="bg-[#F3F4F6] rounded-[7px] flex p-1">
+                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        О нас
+                        </Button>
+                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        Продукты
+                        </Button>
+                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        Состав
+                        </Button>
+                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        FAQ
+                        </Button>
                     </div>
-                    <Button className="bg-[#F3F4F6] text-neutral-800 p-7">О компании</Button>
-                    <Button className="bg-[#06B2D3] p-7">Партнерам</Button>
-                </div>
+    <Button className="bg-[#F3F4F6] text-neutral-800 px-7 py-3 h-auto hover:bg-[#EAEBED] transition-colors rounded-[7px] font-normal">
+        О компании
+    </Button>
+    
+    <Button className="bg-[#06B2D3] text-white px-7 py-3 h-auto hover:bg-[#059DB9] active:scale-95 transition-all rounded-[7px] font-normal shadow-sm hover:shadow-md">
+        Партнерам
+    </Button>
+</div>
                 <Card className="w-full max-w-3xl min-w-sm p-12">
                     <CardHeader>
                         <CardTitle className="text-5xl leading-snug">Сухой полнорационный корм холистик для щенков, взрослых собак и кошек holistic</CardTitle>
                         <CardDescription className="mt-5 text-[18px] text-neutral-800">В полной мере обеспечивает физиологические потребности животных в питательных веществах, необходимых для поддержания нормальной жизнедеятельности их организма.</CardDescription>
                         <div className="flex items-start">
-                            <Button className="p-7 mt-8 bg-[#06B2D3] text-black font-normal">Выбрать корм <div className="bg-white rounded-[5px] w-8 h-8 flex items-center justify-center ml-3"><ArrowRight style={{ strokeWidth: 3 }} className="text-[#06B2D3]"/></div></Button>
+                            <Button className="p-7 mt-8 bg-[#06B2D3] hover:bg-[#059DB9] text-white font-normal transition-all duration-300 active:scale-95 group">
+                            Выбрать корм 
+                            <div className="bg-white rounded-[5px] w-8 h-8 flex items-center justify-center ml-3 transition-transform duration-300 group-hover:translate-x-1">
+                                <ArrowRight style={{ strokeWidth: 3 }} className="text-[#06B2D3]"/>
+                            </div>
+                            </Button>
                         </div>
                     </CardHeader>
                 </Card>
@@ -61,7 +117,7 @@ export default function Page() {
         </div>
         <div className="w-full flex justify-center mt-3 gap-5">
             <div className="w-full max-w-80 bg-[#FDD6EA] flex justify-end items-center rounded-[10px]">
-                <Image src={cat} className="h-70 w-150 flex" alt="cat.png" />
+                <Image src={cat} className="h-70 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
             <Card className="w-full max-w-80 bg-[#F5F5F5]">
                 <CardHeader>
@@ -132,7 +188,7 @@ export default function Page() {
                 </CardHeader>
             </Card>
             <div className="w-full max-w-80 bg-[#F0F9A2] flex justify-end items-center rounded-[10px]">
-                <Image src={dog2} className="h-70 w-150 flex" alt="cat.png" />
+                <Image src={dog2} className="h-70 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
         </div>
         <div className="w-full flex flex-col items-center justify-center text-center">
@@ -145,9 +201,9 @@ export default function Page() {
                 Мы подбираем ингредиенты так, чтобы корм подходил для ежедневного питания и поддерживал общее состояние питомца.
             </CardDescription>
         </div>
-        <div className="w-full flex justify-center gap-5 px-63">
+        <div className="w-full flex justify-center gap-5 px-10">
             <div className="w-full bg-[#FDC7E5] max-w-sm flex justify-end items-center rounded-[10px]">
-                <Image src={dog3} className="h-50 w-150 flex" alt="cat.png" />
+                <Image src={dog3} className="h-50 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
             <Card className="w-full bg-[#F5F5F5]">
                 <CardHeader>
@@ -156,7 +212,7 @@ export default function Page() {
                 </CardHeader>
             </Card>
         </div>
-        <div className="w-full flex justify-center gap-5 px-63">
+        <div className="w-full flex justify-center gap-5 px-10">
             <Card className="w-full bg-[#F5F5F5]">
                 <CardHeader>
                     <CardTitle className="text-3xl font-light mt-5">Рыбий жир из лосося</CardTitle>
@@ -164,12 +220,12 @@ export default function Page() {
                 </CardHeader>
             </Card>
             <div className="w-full bg-[#FDC7E5] max-w-sm flex justify-end items-center rounded-[10px]">
-                <Image src={cat2} className="h-50 w-150 flex" alt="cat.png" />
+                <Image src={cat2} className="h-50 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
         </div>
-        <div className="w-full flex justify-center gap-5 px-63">
+        <div className="w-full flex justify-center gap-5 px-10">
             <div className="w-full bg-[#FDC7E5] max-w-sm flex justify-end items-center rounded-[10px]">
-                <Image src={dog4} className="h-50 w-150 flex" alt="cat.png" />
+                <Image src={dog4} className="h-50 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
             <Card className="w-full bg-[#F5F5F5]">
                 <CardHeader>
@@ -178,7 +234,7 @@ export default function Page() {
                 </CardHeader>
             </Card>
         </div>
-        <div className="w-full flex justify-center gap-5 px-63">
+        <div className="w-full flex justify-center gap-5 px-10">
             <Card className="w-full bg-[#F5F5F5]">
                 <CardHeader>
                     <CardTitle className="text-3xl font-light mt-5">Пробиотики и пребиотики</CardTitle>
@@ -186,12 +242,12 @@ export default function Page() {
                 </CardHeader>
             </Card>
             <div className="w-full bg-[#FDC7E5] max-w-sm flex justify-end items-center rounded-[10px]">
-                <Image src={dog5} className="h-50 w-150 flex" alt="cat.png" />
+                <Image src={dog5} className="h-50 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
         </div>
-        <div className="w-full flex justify-center gap-5 px-63">
+        <div className="w-full flex justify-center gap-5 px-10">
             <div className="w-full bg-[#FDC7E5] max-w-sm flex justify-end items-center rounded-[10px]">
-                <Image src={cat3} className="h-70 w-150 flex" alt="cat.png" />
+                <Image src={cat3} className="h-70 w-150 object-cover flex shrink-0" alt="cat.png" />
             </div>
             <div className="flex flex-col gap-3 w-full">
                 <Card className="w-full bg-[#F5F5F5]">
@@ -265,30 +321,65 @@ export default function Page() {
         <div className="w-full flex flex-col items-center justify-center text-center mt-8">
             <div className="flex flex-row gap-3 w-full max-w-6xl">
                 <div className="bg-[#FDCDE9] p-2 rounded-[10px]">
-                    <Image src={dog6} className="h-110 w-115 flex" alt="cat.png" />
+                    <Image src={dog6} className="h-110 w-115 flex object-cover shrink-0" alt="cat.png" />
                 </div>
                 <Card className="w-full">
                     <CardHeader>
                         <CardTitle className="text-3xl text-left">Заявка на сотрудничество</CardTitle>
-                        <div className="max-w-xl">
-                            <CardDescription className="text-[20px] text-left mt-3">Заполните форму и мы вышлем все материалы на вашу электронную почту</CardDescription>
-                        </div>
-                        <div className="flex flex-row gap-4 mt-3">
-                            <Input placeholder="Ваше имя" className="bg-[#F2F2F2] p-6"></Input>
-                            <Input placeholder="Email или телефон" className="bg-[#F2F2F2] p-6"></Input>
-                        </div>
-                        <div className="mt-4">
-                            <Input placeholder="Тип организации" className="bg-[#F2F2F2] p-6"></Input>
-                        </div>
-                        <div className="mt-4">
-                            <Input placeholder="Ваш вопрос или комментарий" className="bg-[#F2F2F2] p-6"></Input>
-                        </div>
-                        <div className="flex items-start">
-                            <Button className="p-7 mt-8 bg-[#FDD5E9] text-black font-normal">Отправить<div className="bg-white rounded-[5px] w-8 h-8 flex items-center justify-center ml-3"><ArrowRight style={{ strokeWidth: 3 }} className="text-[#F462AB]"/></div></Button>
-                        </div>
+                        <form onSubmit={handleSubmit(SendFeedbackData)}>
+                            <div className="max-w-xl">
+                                <CardDescription className="text-[20px] text-left mt-3">Заполните форму и мы вышлем все материалы на вашу электронную почту</CardDescription>
+                            </div>
+                            <div className="flex flex-row gap-4 mt-3">
+                                <div className="flex-1 flex-col gap-1">
+                                    <Input {...register('name')} placeholder="Ваше имя" aria-invalid={errors.name ? "true" : "false"} className={`bg-[#F2F2F2] p-6 ${errors.name ? "border-red-600 bg-red-200 hover:shadow-red-500" : ""}`}></Input>
+                                    {errors.name && (
+                                        <p className="text-left text-red-500">{errors.name.message}</p>
+                                    )}
+                                </div>
+                                <div className="flex-1 flex-col gap-1">
+                                    <Input {...register('contact')} aria-invalid={errors.contact ? 'true' : 'false'} placeholder="Email или телефон" className={`bg-[#F2F2F2] p-6 ${errors.contact ? "border-red-600 bg-red-200 hover:shadow-red-500" : ""}`}></Input>
+                                    {errors.contact && (
+                                        <p className="text-left text-red-500">{errors.contact.message}</p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="mt-4">
+                                <Input {...register('type_of_organization')} placeholder="Тип организации" aria-invalid={errors.type_of_organization ? "true" : "false"} className={`bg-[#F2F2F2] p-6 ${errors.type_of_organization ? "border-red-600 bg-red-200 hover:shadow-red-500" : ""}`}></Input>
+                                {errors.type_of_organization && (
+                                    <p className="text-left text-red-500">{errors.type_of_organization?.message}</p>
+                                )}
+                            </div>
+                            <div className="mt-4">
+                                <Input {...register('comment')} placeholder="Ваш вопрос или комментарий" aria-invalid={errors.comment ? "true" : "false"} className={`bg-[#F2F2F2] p-6 ${errors.comment ? "border-red-600 bg-red-200 hover:shadow-red-500" : ""}`}></Input>
+                                {errors.comment && (
+                                    <p className="text-left text-red-500">{errors.comment.message}</p>
+                                )}
+                            </div>
+                            {send_error && (
+                                <Alert className="mt-5 bg-red-200 border-red-500">
+                                    <AlertTitle className="text-red-500">Ошибка при отправки формы на сервер</AlertTitle>                                
+                                </Alert>
+                            )}
+                            {success && (
+                                <Alert className="mt-5 bg-green-200 border-green-500">
+                                    <AlertTitle className="text-green-500">Успешная отправка заявки на сервер</AlertTitle>                                
+                                </Alert>
+                            )}
+                            <div className="flex items-start">
+                                <Button className="p-7 mt-8 bg-[#FDD5E9] text-black font-normal transition-all duration-300 hover:bg-[#FCA8D1] active:scale-95 group">
+                                Отправить
+                                    <div className="bg-white rounded-[5px] w-8 h-8 flex items-center justify-center ml-3 transition-transform duration-300 group-hover:translate-x-1">
+                                        <ArrowRight style={{ strokeWidth: 3 }} className="text-[#F462AB]"/>
+                                    </div>
+                                </Button>
+                            </div>
+                        </form>
                     </CardHeader>
                 </Card>
             </div>
+        </div>
+        <div className="w-full bg-[#F2F2F2] h-50 rounded-[10px] mt-5 p-5">
         </div>
     </div>
    )

@@ -11,9 +11,9 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8"
     )
 
-    DB_USER: str
-    DB_PASS: str
-    DB_NAME: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
     DB_HOST: str
     DB_PORT: str
 
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
         """Build an async SQLAlchemy database URL for PostgreSQL (asyncpg)."""
         return (
             f"postgresql+asyncpg://"
-            f"{self.DB_USER}:{self.DB_PASS}@"
-            f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
+            f"{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
         )
 settings = Settings()

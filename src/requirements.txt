@@ -2,3 +2,6 @@ fastapi
 uvicorn
 authx
 sqlalchemy
+asyncpg
+pydantic_settings
+pydantic[email]
