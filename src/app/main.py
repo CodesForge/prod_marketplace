@@ -12,6 +12,7 @@ from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.db.models.feedback import FeedbackOrm
 from src.infrastructure.log.logger import logger
 from src.presentation.api.routes.feedback import feedback_router
+from src.presentation.api.routes.admin import admin_router
 from src.service.admin_service import AdminService
 from src.infrastructure.db.session import DataBaseConfig
 
@@ -29,6 +30,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(feedback_router)
+app.include_router(admin_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -37,3 +39,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health", summary="Проверить состояние сайта", tags=["Health"])
+async def health_check():
+    return {"status": "ok"}

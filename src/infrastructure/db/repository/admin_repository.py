@@ -7,13 +7,14 @@ from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.log.logger import logger
 from src.config.main_admin_settings import settings
 from src.presentation.schemas.admin import AdminSchema
+from src.infrastructure.secure.hash_service import HashService
+from src.infrastructure.secure.authx_service import authx_service
 
 class AdminRepository:
     @staticmethod    
     async def add_admin(
         session: AsyncSession,
         username: str,
-        password_hash: str,
     ):
         try:
             stmt = select(AdminsOrm).where(AdminsOrm.username == username)
@@ -24,9 +25,13 @@ class AdminRepository:
                 logger.info(f"Админ {username} уже существует")
                 return None
 
+            hashed = HashService.password_hash(settings.ADMIN_PASS)
+            if not hashed:
+                raise RuntimeError("Ошибка хеширования пароля")
+            
             admin = AdminsOrm(
                 username = username,
-                password = password_hash
+                password = hashed
             )
             session.add(admin)
             await session.commit()
@@ -44,9 +49,30 @@ class AdminRepository:
             logger.exception(f"Неизвестная ошибка при создании главного админа")
             raise
         
-    # @staticmethod
-    # async def login_admin(
-    #     session: AsyncSession,
-    #     admin: AdminSchema
-    # ):
-        
+    @staticmethod
+    async def login_admin(
+        session: AsyncSession,
+        admin: AdminSchema
+    ):
+        try:
+            stmt = select(AdminsOrm).where(AdminsOrm.username == admin.username)
+            result = await session.execute(stmt)
+            login_admin = result.scalar_one_or_none()
+            
+            if not login_admin:
+                logger.warning("Пользователь не найден")
+                raise ValueError("Неверные учетные данные")
+            
+            if HashService.verify_password(login_admin.password, admin.password):
+                logger.info(f"Пользователь найден: {admin.username}")
+                token = authx_service.create_access_token(uid=str(login_admin.id))
+                return {"access_token": token, "message": "Пользователь успешно вошел в аккаунт"}
+            
+            
+            logger.warning(f"Неверное имя пользователя или пароль")
+            raise ValueError("Неверные учетные данные")
+            
+                
+        except SQLAlchemyError as exc:
+            logger.exception("Ошибка базы данных")
+            raise
