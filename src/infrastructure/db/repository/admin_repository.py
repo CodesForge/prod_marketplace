@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.log.logger import logger
 from src.config.main_admin_settings import settings
+from src.presentation.schemas.admin import AdminSchema
 
 class AdminRepository:
     @staticmethod    
@@ -13,7 +14,7 @@ class AdminRepository:
         session: AsyncSession,
         username: str,
         password_hash: str,
-    ) -> Admin | None:
+    ):
         try:
             stmt = select(AdminsOrm).where(AdminsOrm.username == username)
             result = await session.execute(stmt)
@@ -42,3 +43,10 @@ class AdminRepository:
             await session.rollback()
             logger.exception(f"Неизвестная ошибка при создании главного админа")
             raise
+        
+    # @staticmethod
+    # async def login_admin(
+    #     session: AsyncSession,
+    #     admin: AdminSchema
+    # ):
+        

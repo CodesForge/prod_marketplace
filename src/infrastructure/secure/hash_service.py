@@ -1,6 +1,6 @@
 from secure_python_utils import PasswordService
 
-from src.infrastructure.log import logger
+from src.infrastructure.log.logger import logger
 
 class HashService:
     """Password hashing and verification helpers.

@@ -12,12 +12,16 @@ from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.db.models.feedback import FeedbackOrm
 from src.infrastructure.log.logger import logger
 from src.presentation.api.routes.feedback import feedback_router
+from src.service.admin_service import AdminService
+from src.infrastructure.db.session import DataBaseConfig
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application startup/shutdown resources (DB connection)."""
     await DataBaseConfig.connect()
-    logger.info("База данных поключена")
+    logger.info("База данных подключена")
+    async with DataBaseConfig.async_session_factory() as session:
+        await AdminService.ensure_main_admin(session=session)
     yield
     await DataBaseConfig.disconnect()
     logger.info("База данных отключена")
@@ -28,8 +32,8 @@ app.include_router(feedback_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],           
-    allow_credentials=False,     
+    allow_origins=["*"],       
+    allow_credentials=False, 
     allow_methods=["*"],
     allow_headers=["*"],
 )
