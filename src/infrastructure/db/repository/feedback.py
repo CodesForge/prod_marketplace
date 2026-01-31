@@ -1,5 +1,6 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, OperationalError
 
 from src.presentation.schemas.feedback import Feedback
 from src.infrastructure.db.models.feedback import FeedbackOrm
@@ -35,4 +36,54 @@ class FeedbackRepository:
         except Exception as e:
             await session.rollback()
             logger.exception(f"Не удалось отправить обратную связь, ошибка: {e}")
+            raise
+    
+    @staticmethod
+    async def all_feedback(
+        session: AsyncSession,
+        limit: int,
+        offset: int
+    ) -> dict:
+        try:    
+            stmt = (
+                select(FeedbackOrm)
+                .order_by(FeedbackOrm.id.desc())
+                .limit(limit=limit)
+                .offset(offset=offset)
+            )
+            result = await session.execute(stmt)
+            feedbacks = result.scalars().all()
+
+            if not feedbacks:
+                logger.info("Обратные связи не найдены")
+                return {
+                    "message": "Обратные связи не найдены",
+                    "feedbacks": [],
+                    "total": 0
+                }
+
+            logger.info(f"Обратные связи успешно найдены: {len(feedbacks)} записей")
+
+            return {
+                "message": f"Найдено обратных связей {len(feedbacks)}", 
+                "feedbacks": [
+                    {
+                        "id": feedback.id,
+                        "name": feedback.name,
+                        "contact": feedback.contact,
+                        "type_of_organization": feedback.type_of_organization,
+                        "comment": feedback.comment,
+                        "created_at": feedback.created_at
+                    }
+                    for feedback in feedbacks
+                ], 
+                "total": len(feedbacks)
+            }
+
+        except SQLAlchemyError as exc:
+            logger.exception("Ошибка базы данных при получении обратной связи")
+            raise
+
+        except Exception as e:
+            logger.exception("Неизвестная ошибка при получении обратных связей")
             raise

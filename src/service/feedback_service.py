@@ -43,3 +43,28 @@ Raises:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Неожиданная ошибка при отправке обратной связи"
             ) from e
+
+    @staticmethod
+    async def get_feedback(
+        session: AsyncSession,
+        limit: int,
+        offset: int
+    ) -> dict:
+        try:
+            result = await FeedbackRepository.all_feedback(
+                session=session, 
+                limit=limit, 
+                offset=offset
+            )
+            return result
+
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                detail="Ошибка базы данных при получении обратной связи"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Неизвестная ошибка при получении обратных связей"
+            )

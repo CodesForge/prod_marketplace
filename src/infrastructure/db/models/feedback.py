@@ -1,5 +1,6 @@
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, func, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
+from datetime import datetime
 
 from src.infrastructure.db.session import Base
 
@@ -15,3 +16,4 @@ class FeedbackOrm(Base):
     contact: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
     type_of_organization: Mapped[str] = mapped_column(String(128), nullable=False)
     comment: Mapped[str] = mapped_column(String(512), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
