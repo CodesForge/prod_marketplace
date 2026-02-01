@@ -1,10 +1,12 @@
 'use client'
 
+import { useGetFeedback } from "@/app/hooks/useGetFeedback"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, ShoppingCart, User, MessageCircle} from "lucide-react"
 import { useState } from "react"
 
 function DashBoard() {
+    const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
 
     const toggleTab = (tab: 'admin' | 'goods' | 'feedback') => {
@@ -76,9 +78,19 @@ function DashBoard() {
                                     <MessageCircle className="h-6 w-6"/>
                                     <p className="text-[18px]">Обратная связь</p>
                                 </div>
+                                {data && (
+                                        <div>
+                                            {data?.feedbacks?.map((item) => (
+                                                <div key={item.id} className="mt-3 bg-neutral-100 rounded-[5px] p-2 border-2">
+                                                    <p>Имя: {item.name}</p>
+                                                    <p>Контакт: {item.contact}</p>
+                                                    <p>Организация: {item.type_of_organization}</p>
+                                                    <p>Комментарий: {item.comment}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                             </CardTitle>
-                            <div className="bg-neutral-100 h-200 rounded-[10px] mt-5">
-                            </div>
                         </CardHeader>
                     </Card>
                 )}
