@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError, OperationalError
 
@@ -54,6 +54,10 @@ class FeedbackRepository:
             result = await session.execute(stmt)
             feedbacks = result.scalars().all()
 
+            counter_stmt = select(func.count()).select_from(FeedbackOrm)
+            total_result = await session.execute(counter_stmt)
+            total = total_result.scalar_one_or_none() or 0
+
             if not feedbacks:
                 logger.info("Обратные связи не найдены")
                 return {
@@ -77,7 +81,7 @@ class FeedbackRepository:
                     }
                     for feedback in feedbacks
                 ], 
-                "total": len(feedbacks)
+                "total": total
             }
 
         except SQLAlchemyError as exc:

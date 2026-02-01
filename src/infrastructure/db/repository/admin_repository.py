@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession 
 
@@ -60,13 +60,13 @@ class AdminRepository:
             login_admin = result.scalar_one_or_none()
             
             if not login_admin:
-                logger.warning("Пользователь не найден")
+                logger.warning("Админ не найден")
                 raise ValueError("Неверные учетные данные")
             
             if HashService.verify_password(login_admin.password, admin.password):
-                logger.info(f"Пользователь найден: {admin.username}")
+                logger.info(f"Админ найден: {admin.username}")
                 token = authx_service.create_access_token(uid=str(login_admin.id))
-                return {"access_token": token, "message": "Пользователь успешно вошел в аккаунт"}
+                return {"access_token": token, "message": "Админ успешно вошел в аккаунт"}
             
             
             logger.warning(f"Неверное имя пользователя или пароль")
@@ -75,4 +75,54 @@ class AdminRepository:
                 
         except SQLAlchemyError as exc:
             logger.exception("Ошибка базы данных")
+            raise
+    
+    @staticmethod
+    async def all_admin(
+        session: AsyncSession,
+        limit: int,
+        offset: int
+    ) -> dict:
+        try:    
+            stmt = (
+                select(AdminsOrm)
+                .order_by(AdminsOrm.id.desc())
+                .limit(limit=limit)
+                .offset(offset=offset)
+            )
+            result = await session.execute(stmt)
+            admins = result.scalars().all()
+
+            counter_stmt = select(func.count()).select_from(AdminsOrm)
+            total_result = await session.execute(counter_stmt)
+            total = total_result.scalar_one_or_none() or 0
+
+            
+
+            if not admins:
+                logger.info("Админы не найдены")
+                return {
+                    "message": "Админы не найдены",
+                    "admins": [],
+                    "total": 0
+                }
+            logger.info(f"Успешно найдено {len(admins)}")
+
+            return {
+                "message": f"Успешно найдено {len(admins)}",
+                "admins": [
+                    {
+                        "id": admin.id,
+                        "username": admin.username,
+                        "created_at": admin.created_at
+                    }
+                    for admin in admins
+                ],
+                "total": total
+            }
+        except SQLAlchemyError as exc:
+            logger.exception("Ошибка базы данных при получении админов")
+            raise
+        except Exception as e:
+            logger.exception("Неизвестная ошибка при получении админов")
             raise

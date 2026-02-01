@@ -1,12 +1,13 @@
 from src.presentation.api.deps import SessionDep
 from src.presentation.schemas.admin import AdminSchema
 from src.service.admin_service import AdminService
+from src.infrastructure.secure.authx_service import authx_service, bearer_scheme
 
+from fastapi import APIRouter, Query, Depends
+from fastapi.security import HTTPAuthorizationCredentials
+from authx import TokenPayload
 
-
-from fastapi import APIRouter
-
-admin_router = APIRouter(prefix="/admin", tags=["Admin"])
+admin_router = APIRouter(prefix="/admins", tags=["Admin"])
 
 @admin_router.post("/login", summary="Войти в аккаунт")
 async def login_admin(
@@ -15,3 +16,16 @@ async def login_admin(
 ):
     return await AdminService.authenticate_admin(session=session, admin=admin)
 
+@admin_router.post("/get", summary="Получить всех админов")
+async def get_admins(
+    session: SessionDep,
+    limit: int = Query(10, ge=0, le=15),
+    offset: int = Query(0, ge=0),
+    payload: TokenPayload = Depends(authx_service.access_token_required),
+    _: HTTPAuthorizationCredentials = Depends(bearer_scheme)
+):    
+    return await AdminService.get_admin(
+        session=session,
+        limit=limit,
+        offset=offset
+    )

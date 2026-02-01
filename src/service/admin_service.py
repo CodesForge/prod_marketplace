@@ -4,8 +4,9 @@ from src.config.main_admin_settings import settings
 from src.infrastructure.log.logger import logger
 from src.presentation.schemas.admin import AdminSchema
 
-from sqlalchemy.ext.asyncio import AsyncSession 
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession 
 from fastapi import HTTPException, status
 
 class AdminService:
@@ -51,3 +52,26 @@ class AdminService:
                 detail="Неизвестная ошибка при входе в аккаунт"
             )
             
+    @staticmethod
+    async def get_admin(
+        session: AsyncSession,
+        limit: int,
+        offset: int,
+    ) -> dict:
+        try:
+            result = await AdminRepository.all_admin(
+                session=session,
+                limit=limit,
+                offset=offset
+            )
+            return result
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                detail="Ошибка базы данных при получении админов"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                detail="Неизвестная ошибка при получении админов"
+            )
