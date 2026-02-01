@@ -7,7 +7,7 @@ from src.presentation.api.deps import SessionDep
 from src.presentation.schemas.feedback import Feedback
 from src.infrastructure.secure.authx_service import authx_service, bearer_scheme
 
-feedback_router = APIRouter(prefix="/feedback", tags=["Feedback"])
+feedback_router = APIRouter(prefix="/feedbacks", tags=["Feedback"])
 
 @feedback_router.post("", status_code=status.HTTP_201_CREATED)
 async def submit_feedback(
