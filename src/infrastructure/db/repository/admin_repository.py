@@ -12,7 +12,7 @@ from src.infrastructure.secure.authx_service import authx_service
 
 class AdminRepository:
     @staticmethod    
-    async def add_admin(
+    async def add_main_admin(
         session: AsyncSession,
         username: str,
     ):
@@ -125,4 +125,45 @@ class AdminRepository:
             raise
         except Exception as e:
             logger.exception("Неизвестная ошибка при получении админов")
+            raise
+
+    @staticmethod
+    async def add_admin(
+        session: AsyncSession,
+        admin: AdminSchema,
+    ) -> dict:
+        try:
+            stmt = select(AdminsOrm).where(AdminsOrm.username == admin.username)
+            result = await session.execute(stmt)
+            existing_admin = result.scalar_one_or_none()
+
+            if existing_admin:
+                logger.warning(f"Админ: {existing_admin.username} уже существует")
+                raise ValueError("Админ с таким именем уже существует")
+            
+            hashed = HashService.password_hash(admin.password)
+
+            new_admin = AdminsOrm(
+                username = admin.username,
+                password = hashed
+            )
+
+            session.add(new_admin)
+            await session.commit()
+            await session.refresh(new_admin)
+            logger.info("Админ успешно добавлен")
+            return {
+                "message": "Админ успешно добавлен",
+                "username": new_admin.username,
+                "id": new_admin.id,
+                "created_at": new_admin.created_at
+            }
+
+        except SQLAlchemyError as exc:
+            await session.rollback()
+            logger.exception("Ошибка БД при создании админа")
+            raise
+        except Exception as e:
+            await session.rollback()
+            logger.exception("Неизвестная ошибка при добавлении админа")
             raise

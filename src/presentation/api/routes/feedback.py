@@ -9,7 +9,11 @@ from src.infrastructure.secure.authx_service import authx_service, bearer_scheme
 
 feedback_router = APIRouter(prefix="/feedbacks", tags=["Feedback"])
 
-@feedback_router.post("", status_code=status.HTTP_201_CREATED)
+@feedback_router.post(
+    "/add", 
+    status_code=status.HTTP_201_CREATED, 
+    summary="Добавить обратную связь"
+)
 async def submit_feedback(
     feedback: Feedback,
     session: SessionDep

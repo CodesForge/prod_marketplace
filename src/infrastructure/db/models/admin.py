@@ -12,7 +12,7 @@ class AdminsOrm(Base):
     """
     __tablename__ = "admins"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(32), unique=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    username: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     password: Mapped[str] = mapped_column(String(256)) #так много т к хеширование
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

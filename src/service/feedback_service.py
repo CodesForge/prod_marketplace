@@ -33,6 +33,13 @@ Raises:
             )
             logger.info("Обратная связь отправлена")
             return {"message": "Обратная связь успешно отправлена"}
+        
+        except ValueError as exc:
+            logger.exception(f"Попытка дублирования данных {exc}")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, 
+                detail=str(exc)
+            )
         except SQLAlchemyError as exc:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

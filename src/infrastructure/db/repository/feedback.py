@@ -15,6 +15,14 @@ class FeedbackRepository:
     ) -> dict:
         """Insert a feedback row and return a small response payload."""
         try:
+            stmt = select(FeedbackOrm).where(FeedbackOrm.contact == feedback.contact)
+            result = await session.execute(stmt)
+            existing = result.scalar_one_or_none()
+
+            if existing:
+                logger.info(f"Контакт {feedback.contact} уже существует")
+                raise ValueError(f"Контакт {feedback.contact} уже существует")
+            
             new_feedback = FeedbackOrm(
                 name = feedback.name,
                 contact = feedback.contact,

@@ -15,13 +15,14 @@ class AdminService:
         session: AsyncSession,
     ) -> None:
         
-        result = await AdminRepository.add_admin(
+        result = await AdminRepository.add_main_admin(
             session=session, 
             username=settings.ADMIN_NAME,
         )
 
         if result is None:
             logger.info("Админ уже существует или создан другим человеком")
+            
         else:
             logger.info(f"Главный админ {settings.ADMIN_NAME}")
             
@@ -74,4 +75,29 @@ class AdminService:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
                 detail="Неизвестная ошибка при получении админов"
+            )
+    
+    async def add_admin(
+        session: AsyncSession,
+        admin: AdminSchema
+    ) -> dict:
+        try:
+            return await AdminRepository.add_admin(
+                session=session,
+                admin=admin
+            )
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=str(exc)
+            )
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Ошибка базы данных при добавлении админа"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Неизвестная ошибка при добавлении админа"
             )
