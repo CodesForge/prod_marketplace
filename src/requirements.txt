@@ -5,3 +5,4 @@ sqlalchemy
 asyncpg
 pydantic_settings
 pydantic[email]
+secure-python-utils==0.1.4
