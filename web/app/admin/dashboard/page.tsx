@@ -1,11 +1,13 @@
 'use client'
 
+import { useGetAdmins } from "@/app/hooks/useGetAdmins"
 import { useGetFeedback } from "@/app/hooks/useGetFeedback"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, ShoppingCart, User, MessageCircle} from "lucide-react"
 import { useState } from "react"
 
 function DashBoard() {
+    const { admin_data, admin_error } = useGetAdmins();
     const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
 
@@ -54,6 +56,16 @@ function DashBoard() {
                                     <Users className="h-6 w-6"/>
                                     <p className="text-[18px]">Админы</p>
                                 </div>
+                                {data && (
+                                        <div>
+                                            {admin_data?.admins?.map((item) => (
+                                                <div key={item.id} className="mt-3 bg-neutral-100 rounded-[5px] p-2 border-2">
+                                                    <p>Админ: @{item.username}</p>
+                                                    <p>Айди админа: {item.id}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                             </CardTitle>
                         </CardHeader>
                     </Card>

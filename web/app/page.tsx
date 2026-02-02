@@ -35,7 +35,7 @@ export default function Page() {
         try {
             setSuccess(false)
             setSend_error(false)
-            const response = await fetch("/api/feedback", {
+            const response = await fetch("/api/feedbacks", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

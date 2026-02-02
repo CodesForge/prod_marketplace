@@ -1,7 +1,7 @@
 
 export async function loginAdmin(data: { username: string, password: string }) {
     try {
-        const response = await fetch("/api/admin/login", {
+        const response = await fetch("/api/admins/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
