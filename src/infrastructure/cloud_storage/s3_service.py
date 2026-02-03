@@ -22,17 +22,5 @@ class S3Client:
             "s3", config=botocore_config, **self.config
         ) as client:
             yield client
-            
-    async def upload_file(self, file_path, object_name = None):
-        if object_name is None:
-            object_name = file_path.split("/")[-1]
-            
-        async with self.get_client() as client:
-            with open(file_path, "rb") as file:
-                await client.put_object(
-                    Bucket=self.bucket_name,
-                    Key=object_name,
-                    Body=file
-                )
 
 s3client = S3Client()
