@@ -1,15 +1,35 @@
 'use client'
 
+import { useAddAdmin } from "@/app/hooks/useAddAdmin"
 import { useGetAdmins } from "@/app/hooks/useGetAdmins"
 import { useGetFeedback } from "@/app/hooks/useGetFeedback"
+import { Alert, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
+import { AdminAddSchema } from "@/schemas/addAdmin"
+import { AdminTypeSchema } from "@/schemas/admin"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Users, ShoppingCart, User, MessageCircle} from "lucide-react"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 function DashBoard() {
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<AdminTypeSchema>({
+        resolver: zodResolver(AdminAddSchema),
+    });
+
+    const addmutate = useAddAdmin();
     const { admin_data, admin_error } = useGetAdmins();
     const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
+
+    const OnSubmit = (data: AdminTypeSchema) => {
+        addmutate.mutate({ username: data.username, password: data.password })
+        reset();
+    }
 
     const toggleTab = (tab: 'admin' | 'goods' | 'feedback') => {
         setActiveTab(activeTab === tab ? null : tab);
@@ -52,9 +72,51 @@ function DashBoard() {
                     <Card className="border w-full">
                         <CardHeader>
                             <CardTitle>
-                                <div className="flex flex-row items-center gap-3">
-                                    <Users className="h-6 w-6"/>
-                                    <p className="text-[18px]">Админы</p>
+                                <div className="flex flex-row items-center gap-3 justify-between">
+                                    <div className="flex flex-row gap-3">
+                                        <Users className="h-6 w-6"/>
+                                        <p className="text-[18px]">Админы</p>
+                                    </div>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                            <Button className="bg-neutral-100 border-neutral-400 text-black hover:bg-neutral-200">Добавить админа</Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Добавить админа</DialogTitle>
+                                                <DialogDescription>
+                                                    заполните данные для того что бы добавить нового администратора
+                                                </DialogDescription>
+                                                <form onSubmit={handleSubmit(OnSubmit)}>
+                                                    <div className="mt-3">
+                                                        <p>Имя админа</p>
+                                                        <Input {...register("username")} aria-invalid={errors.username ? "true" : "false"} className={`mt-1 ${errors.username ? "border-red-600 bg-red-200" : ""}`} placeholder="Введите имя админа"></Input>
+                                                        {errors.username && (
+                                                            <p className="text-red-500">{errors.username.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-3">
+                                                        <p>Пароль</p>
+                                                        <Input {...register("password")} aria-invalid={errors.password ? "true" : "false"} className={`mt-1 ${errors.password ? "border-red-600 bg-red-200" : ""}`} placeholder="Введите пароль для админа"></Input>
+                                                        {errors.password && (
+                                                            <p className="text-red-500">{errors.password.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <Button className="mt-4 w-full">{addmutate.isPending ? `${<Spinner/>} загрузка` : "добавить"}</Button>
+                                                </form>
+                                                {addmutate.error && (
+                                                    <Alert className="bg-red-200 border-red-500">
+                                                        <AlertTitle className="text-red-500">{addmutate.error.message}</AlertTitle>
+                                                    </Alert>
+                                                )}
+                                                {addmutate.isSuccess && (
+                                                    <Alert className="bg-green-200 border-green-500">
+                                                        <AlertTitle className="text-green-500">{addmutate.data.message}</AlertTitle>
+                                                    </Alert>
+                                                )}
+                                            </DialogHeader>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                                 {data && (
                                         <div>
