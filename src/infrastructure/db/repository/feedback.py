@@ -71,7 +71,7 @@ class FeedbackRepository:
                 return {
                     "message": "Обратные связи не найдены",
                     "feedbacks": [],
-                    "total": 0
+                    "total": total
                 }
 
             logger.info(f"Обратные связи успешно найдены: {len(feedbacks)} записей")

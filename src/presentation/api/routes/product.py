@@ -1,17 +1,19 @@
-from fastapi import APIRouter, File, UploadFile, Depends, Form
+from fastapi import APIRouter, File, UploadFile, Depends, Form, Query
 from fastapi.security import HTTPAuthorizationCredentials
-from authx import TokenPayload\
+from authx import TokenPayload
 
 from src.infrastructure.secure.authx_service import authx_service, bearer_scheme
 from src.presentation.api.deps import SessionDep
 from src.presentation.schemas.product import ProductSchema
 from src.service.product_service import ProductService
 
-product_router = APIRouter(prefix="/product", tags=["Product"])
+product_router = APIRouter(prefix="/products", tags=["Product"])
 
-@product_router.post("/add-product", summary="Добавить продукт")
+@product_router.post("", summary="Добавить продукт")
 async def add_product(
     session: SessionDep,
+    _: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    payload: TokenPayload = Depends(authx_service.access_token_required),
     title: str = Form(...),
     description: str = Form(...),
     price: float = Form(...),
@@ -25,3 +27,14 @@ async def add_product(
         file=file
     )
 
+@product_router.get("", summary="Получить все продукты")
+async def get_all_products(
+    session: SessionDep,
+    limit: int = Query(16, ge=1, le=40),
+    offset: int = Query(0, ge=0)
+):
+    return await ProductService.all_products(
+        session=session,
+        limit=limit,
+        offset=offset
+    )

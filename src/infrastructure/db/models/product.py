@@ -6,7 +6,7 @@ from src.infrastructure.db.session import Base
 
 
 
-class Product(Base):
+class ProductOrm(Base):
     __tablename__ = "products"
     
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -14,4 +14,4 @@ class Product(Base):
     description: Mapped[str] = mapped_column(String(2000), nullable=False)
     price: Mapped[float] = mapped_column(nullable=False)
     s3_image_key: Mapped[str] = mapped_column(String(500), nullable=False)
-    creted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

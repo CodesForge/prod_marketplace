@@ -31,7 +31,7 @@ async def submit_feedback(
 )
 async def get_feedback(
     session: SessionDep,
-    limit: int = Query(10, ge=0, le=100),
+    limit: int = Query(10, ge=1, le=100),
     offset: int = Query(0, ge=0),
     _: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     payload: TokenPayload = Depends(authx_service.access_token_required),

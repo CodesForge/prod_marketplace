@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.infrastructure.db.session import DataBaseConfig
 from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.db.models.feedback import FeedbackOrm
-from src.infrastructure.db.models.product import Product
+from src.infrastructure.db.models.product import ProductOrm
 from src.infrastructure.log.logger import logger
 from src.presentation.api.routes.feedback import feedback_router
 from src.presentation.api.routes.admin import admin_router

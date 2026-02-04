@@ -1,8 +1,9 @@
+from sqlalchemy import select, func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.presentation.schemas.product import ProductSchema
-from src.infrastructure.db.models.product import Product
+from src.infrastructure.db.models.product import ProductOrm
 from src.infrastructure.log.logger import logger
 
 class ProductRepository:
@@ -13,7 +14,7 @@ class ProductRepository:
         link: str,
     ):
         try:    
-            new_product = Product(
+            new_product = ProductOrm(
                 title = product.title,
                 description = product.description,
                 price = product.price,
@@ -43,4 +44,58 @@ class ProductRepository:
         except Exception as e:
             await session.rollback()
             logger.exception("Неизвестная ошибка при добавлении товара")
+            raise
+
+    @staticmethod
+    async def all_products(
+        session: AsyncSession,
+        limit: int,
+        offset: int
+    ):
+        try:
+            stmt = (
+                select(ProductOrm)
+                .order_by(ProductOrm.id.desc())
+                .limit(limit=limit)
+                .offset(offset=offset)
+            )
+            result = await session.execute(stmt)
+            products = result.scalars().all()
+
+            count_stmt = select(func.count()).select_from(ProductOrm)
+            total_result = await session.execute(count_stmt)
+            total = total_result.scalar_one_or_none() or 0
+
+            if not products:
+                logger.info("Продукты не найдены")
+                return {
+                    "status": "success",
+                    "products": [],
+                    "total": total,
+                    "message": "Продукты не найдены"
+                }
+                
+            logger.info("Продукты успешно найдены")
+
+            return {
+                "status": "success",
+                "products": [
+                    {
+                        "id": product.id,
+                        "title": product.title,
+                        "description": product.description,
+                        "price": product.price,
+                        "s3_image_key": product.s3_image_key,
+                        "created_at": product.created_at
+                    }
+                for product in products],
+                "total": total,
+                "message": "Продукты успешно найдены"
+            }
+            
+        except SQLAlchemyError as exc:
+            logger.exception(f"Ошибка базы данных при получении товаров: {exc}")
+            raise
+        except Exception as exc:
+            logger.exception(f"Неизвестная ошибка при получении товаров: {exc}")
             raise
