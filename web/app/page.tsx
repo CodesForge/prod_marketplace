@@ -21,8 +21,11 @@ import dog from "@/images/dog.png"
 import dog3 from "@/images/dog3.png"
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
+    const router = useRouter();
+
     const [error_result, setError_result] = useState('');
     const [result, setResult] = useState('')
     const [success, setSuccess] = useState(false)
@@ -58,6 +61,7 @@ export default function Page() {
     }
 
    return(
+    <div>
     <div className="flex min-h-screen justify-start items-start p-6 flex-col gap-10">
         <div className="bg-[#E5E5E5] w-full rounded-[10px] flex flex-row">
             <div className="w-1/3 flex">
@@ -81,7 +85,7 @@ export default function Page() {
                         FAQ
                         </Button>
                     </div>
-    <Button className="bg-[#F3F4F6] text-neutral-800 px-7 py-3 h-auto hover:bg-[#EAEBED] transition-colors rounded-[7px] font-normal">
+    <Button onClick={() => router.push("/company")} className="bg-[#F3F4F6] text-neutral-800 px-7 py-3 h-auto hover:bg-[#EAEBED] transition-colors rounded-[7px] font-normal">
         О компании
     </Button>
     
@@ -379,8 +383,58 @@ export default function Page() {
                 </Card>
             </div>
         </div>
-        <div className="w-full bg-[#F2F2F2] h-50 rounded-[10px] mt-5 p-5">
+    </div>
+    <footer className="bg-[#F2F2F2] py-12 px-5">
+    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="flex flex-col items-start">
+            <div className="cursor-default hover:bg-neutral-100 rounded-[5px] p-2 mb-4">
+                <p className="text-2xl font-light">WellWet</p>
+            </div>
+            <CardDescription className="text-neutral-700 max-w-sm">
+                WellWet — бренд holistic-кормов для собак и кошек. Качество ингредиентов, понятный состав, реальные потребности питомцев.
+            </CardDescription>
+        </div>
+
+        <div>
+            <CardTitle className="text-lg font-normal mb-6 text-neutral-900">Продукты</CardTitle>
+            <ul className="space-y-3 text-neutral-700">
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Сухие корма</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Влажные корма</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Лакомства</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Витамины</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <CardTitle className="text-lg font-normal mb-6 text-neutral-900">Компания</CardTitle>
+            <ul className="space-y-3 text-neutral-700">
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">О нас</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Состав</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-neutral-900 transition-colors">Партнерам</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <CardTitle className="text-lg font-normal mb-6 text-neutral-900">Контакты</CardTitle>
+            <div className="space-y-3 text-neutral-700">
+                <p>arnoldxxxx5@gmail.com</p>
+                <p>+7 (960) 870-71-65</p>
+                <p className="flex items-center gap-2">@Vafitempo</p>
+            </div>
         </div>
     </div>
+
+    <div className="border-t border-neutral-400 pt-8 mt-12">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-neutral-600 text-sm">
+            <p>© 2026 WellWet. Все права защищены.</p>
+            <div className="flex gap-6 mt-4 md:mt-0">
+                <a href="#" className="hover:text-neutral-900 transition-colors">Политика конфиденциальности</a>
+                <a href="#" className="hover:text-neutral-900 transition-colors">Условия использования</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
    )
 }
