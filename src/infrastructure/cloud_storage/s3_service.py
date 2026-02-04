@@ -1,7 +1,10 @@
 from aiobotocore.session import get_session
 from contextlib import asynccontextmanager
 from botocore.config import Config
+from fastapi import UploadFile
+
 from src.config.s3_service_settings import settings
+from src.infrastructure.log.logger import logger
 
 class S3Client:
     def __init__(self):
@@ -22,5 +25,29 @@ class S3Client:
             "s3", config=botocore_config, **self.config
         ) as client:
             yield client
+            
+    async def upload_photo_file(self, file: UploadFile):
+        
+        try:    
+            file_content = await file.read()
+            
+            if not file.filename or not file.filename.strip() or not file_content:
+                logger.error("Имя файла или содержание файла является пустым")
+                raise ValueError("Имя файла или содержание файла является пустым")
+            
+            async with self.get_client() as s3:
+                await s3.put_object(
+                    Bucket=s3client.bucket_name,
+                    Key=file.filename,
+                    Body=file_content 
+                )
+                
+            file_url = f"https://s3.ru1.storage.beget.cloud/{self.bucket_name}/{file.filename}"
+            logger.info("Файл успешно загружен")
+            
+            return file_url
+        finally:
+            await file.close()
+            
 
 s3client = S3Client()

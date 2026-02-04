@@ -9,7 +9,7 @@ from src.infrastructure.db.session import Base
 class Product(Base):
     __tablename__ = "products"
     
-    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
     description: Mapped[str] = mapped_column(String(2000), nullable=False)
     price: Mapped[float] = mapped_column(nullable=False)

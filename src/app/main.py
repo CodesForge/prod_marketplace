@@ -10,9 +10,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.infrastructure.db.session import DataBaseConfig
 from src.infrastructure.db.models.admin import AdminsOrm
 from src.infrastructure.db.models.feedback import FeedbackOrm
+from src.infrastructure.db.models.product import Product
 from src.infrastructure.log.logger import logger
 from src.presentation.api.routes.feedback import feedback_router
 from src.presentation.api.routes.admin import admin_router
+from src.presentation.api.routes.product import product_router
 from src.service.admin_service import AdminService
 from src.infrastructure.db.session import DataBaseConfig
 
@@ -31,6 +33,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(feedback_router)
 app.include_router(admin_router)
+app.include_router(product_router)
 
 app.add_middleware(
     CORSMiddleware,
