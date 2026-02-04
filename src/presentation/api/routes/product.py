@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Depends
+from fastapi import APIRouter, File, UploadFile, Depends, Form
 from fastapi.security import HTTPAuthorizationCredentials
 from authx import TokenPayload\
 
@@ -12,12 +12,16 @@ product_router = APIRouter(prefix="/product", tags=["Product"])
 @product_router.post("/add-product", summary="Добавить продукт")
 async def add_product(
     session: SessionDep,
-    product: ProductSchema,
+    title: str = Form(...),
+    description: str = Form(...),
+    price: float = Form(...),
     file: UploadFile = File(...)
 ):
     return await ProductService.add_product(
         session=session,
-        product=product,
+        title=title,
+        description=description,
+        price=price,
         file=file
     )
 

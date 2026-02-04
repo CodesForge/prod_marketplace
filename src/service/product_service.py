@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException, UploadFile, status
+from fastapi import HTTPException, UploadFile, status, Form
 
 from src.infrastructure.cloud_storage.s3_service import s3client
 from src.presentation.schemas.product import ProductSchema
@@ -10,11 +10,19 @@ class ProductService:
     @staticmethod
     async def add_product(
         session: AsyncSession,
-        product: ProductSchema,
+        title: str,
+        description: str,
+        price: float,
         file: UploadFile
     ):
         try:    
             link = await s3client.upload_photo_file(file=file)
+
+            product = ProductSchema(
+                title=title,
+                description=description,
+                price=price
+            )
             
             return await ProductRepository.add_product(
                 session=session,
