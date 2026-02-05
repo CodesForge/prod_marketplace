@@ -1,13 +1,16 @@
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession 
+from fastapi import HTTPException, status
+from authx import TokenPayload
+
 from src.infrastructure.db.repository.admin_repository import AdminRepository
 from src.infrastructure.secure.hash_service import HashService
 from src.config.main_admin_settings import settings
 from src.infrastructure.log.logger import logger
 from src.presentation.schemas.admin import AdminSchema
+from src.infrastructure.secure.authx_service import authx_service
 
-from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession 
-from fastapi import HTTPException, status
 
 class AdminService:
     @staticmethod
@@ -100,4 +103,32 @@ class AdminService:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Неизвестная ошибка при добавлении админа"
+            )
+
+    @staticmethod
+    async def get_current_admin(
+        session: AsyncSession,
+        payload: TokenPayload
+    ):
+        try:
+
+            return await AdminRepository.get_current_admin(
+                session=session,
+                id=int(payload.sub)
+            )
+
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(exc)
+            )
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Ошибка базы данных при получении админа: {exc}"
+            )
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Неизвестная ошибка при получении админа: {exc}"
             )

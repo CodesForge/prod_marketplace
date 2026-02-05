@@ -1,10 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException, UploadFile, status, Form
+from fastapi import HTTPException, UploadFile, status, Form, Depends
+from authx import TokenPayload
 
 from src.infrastructure.cloud_storage.s3_service import s3client
 from src.presentation.schemas.product import ProductSchema
 from src.infrastructure.db.repository.product_repository import ProductRepository
+from src.infrastructure.secure.authx_service import authx_service
 
 class ProductService:
     @staticmethod

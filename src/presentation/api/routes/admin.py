@@ -41,3 +41,14 @@ async def add_admin(
         session=session,
         admin=admin
     )
+
+@admin_router.get("/get-admin", summary="Получить админа по jwt")
+async def get_current_admin(
+    session: SessionDep,
+    _: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    payload: TokenPayload = Depends(authx_service.access_token_required)
+):
+    return await AdminService.get_current_admin(
+        session=session,
+        payload=payload
+    )

@@ -11,7 +11,8 @@ class S3Client:
         self.config = {
             "aws_access_key_id": settings.ACCESS_KEY,
             "aws_secret_access_key": settings.SECRET_KEY,
-            "endpoint_url": settings.ENDPOINT_URL
+            "endpoint_url": settings.ENDPOINT_URL,
+            "verify": False
         }
         self.bucket_name = settings.BUCKET_NAME
         self.session = get_session()

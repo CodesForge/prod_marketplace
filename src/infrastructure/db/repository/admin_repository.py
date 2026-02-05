@@ -167,3 +167,33 @@ class AdminRepository:
             await session.rollback()
             logger.exception("Неизвестная ошибка при добавлении админа")
             raise
+
+    @staticmethod
+    async def get_current_admin(
+        session: AsyncSession,
+        id: int
+    ):
+        try:    
+            stmt = select(AdminsOrm).where(AdminsOrm.id == id)
+            result = await session.execute(stmt)
+            admin = result.scalar_one_or_none()
+
+            if not admin:
+                logger.warning(f"Админ с id: {id} не найден")
+                raise ValueError(f"Админ с id: {id} не найден")
+
+            logger.info("Админ успешно найден")
+            return {
+                "message": "Админ успешно найден",
+                "admin": {
+                    "id": admin.id,
+                    "username": admin.username,
+                    "created_at": admin.created_at
+                }
+            }
+        except SQLAlchemyError as exc:
+            logger.exception(f"Ошибка базы данных при получении админа: {exc}")
+            raise
+        except Exception as exc:
+            logger.exception(f"Неизвестная ошибка при получении админа: {exc}")
+            raise
