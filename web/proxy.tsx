@@ -1,4 +1,3 @@
-// proxy.ts (в корне проекта!)
 import { NextRequest, NextResponse } from "next/server";
 
 export function proxy(request: NextRequest) {

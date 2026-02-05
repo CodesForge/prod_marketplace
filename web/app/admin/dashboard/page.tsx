@@ -1,6 +1,7 @@
 'use client'
 
 import { useAddAdmin } from "@/app/hooks/useAddAdmin"
+import { useAddProducts } from "@/app/hooks/useAddProducts"
 import { useGetAdmins } from "@/app/hooks/useGetAdmins"
 import { useGetFeedback } from "@/app/hooks/useGetFeedback"
 import { Alert, AlertTitle } from "@/components/ui/alert"
@@ -9,7 +10,9 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { Textarea } from "@/components/ui/textarea"
 import { AdminAddSchema } from "@/schemas/addAdmin"
+import { AddProductsSchema, AddProductsTypeSchema } from "@/schemas/addProducts"
 import { AdminTypeSchema } from "@/schemas/admin"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Users, ShoppingCart, User, MessageCircle} from "lucide-react"
@@ -21,14 +24,27 @@ function DashBoard() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<AdminTypeSchema>({
         resolver: zodResolver(AdminAddSchema),
     });
+    const {
+        register: productRegister,
+        handleSubmit: productHandleSubmit,
+        formState: { errors: productErrors },
+        reset: productReset,
+    } = useForm<AddProductsTypeSchema>({
+        resolver: zodResolver(AddProductsSchema),
+    })
 
     const limit = 10;
     const offset = 0;
 
+    const addproducts = useAddProducts();
     const addmutate = useAddAdmin();
     const { admin_data, admin_error } = useGetAdmins({ limit, offset });
     const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
+
+    const onSubmitProducts = (data: any) => {
+        addproducts.mutate(data);
+    }
 
     const OnSubmit = (data: AdminTypeSchema) => {
         addmutate.mutate({ username: data.username, password: data.password })
@@ -106,7 +122,7 @@ function DashBoard() {
                                                             <p className="text-red-500">{errors.password.message}</p>
                                                         )}
                                                     </div>
-                                                    <Button className="mt-4 w-full">{addmutate.isPending ? `${<Spinner/>} загрузка` : "добавить"}</Button>
+                                                    <Button className="mt-4 w-full">{addmutate.isPending ? <Spinner/> : "добавить"}</Button>
                                                 </form>
                                                 {addmutate.error && (
                                                     <Alert className="bg-red-200 border-red-500">
@@ -140,9 +156,65 @@ function DashBoard() {
                     <Card className="border w-full">
                         <CardHeader>
                             <CardTitle>
-                                <div className="flex flex-row items-center gap-3">
-                                    <ShoppingCart className="h-6 w-6"/>
-                                    <p className="text-[18px]">Товары</p>
+                                <div className="flex flex-row items-center gap-3 justify-between">
+                                    <div className="flex flex-row gap-3">
+                                        <ShoppingCart className="h-6 w-6"/>
+                                        <p className="text-[18px]">Товары</p>
+                                    </div>
+                                    <Dialog>
+                                        <DialogTrigger>
+                                            <Button className="bg-neutral-100 border-neutral-400 text-black hover:bg-neutral-200">Добавить товар</Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Добавить товар</DialogTitle>
+                                                <DialogDescription>
+                                                    заполните данные для того что бы добавить новый товар
+                                                </DialogDescription>
+                                                <form onSubmit={productHandleSubmit(onSubmitProducts)}>
+                                                    <div className="mt-3">
+                                                        <p>Заголовок товара</p>
+                                                        <Input {...productRegister("title")} aria-invalid={productErrors.title ? "true" : "false"} className={`mt-1 ${productErrors.title ? "border-red-600 bg-red-200" : ""}`} placeholder="Введите заголовок товара"></Input>
+                                                        {productErrors.title && (
+                                                            <p className="text-red-500">{productErrors.title.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-3">
+                                                        <p>Описание товара</p>
+                                                        <Textarea {...productRegister("description")} aria-invalid={productErrors.description ? "true" : "false"} className={`mt-1 max-h-60 ${productErrors.description ? "border-red-600 bg-red-200" : ""}`} placeholder="Введите описание для товара"></Textarea>
+                                                        {productErrors.description && (
+                                                            <p className="text-red-500">{productErrors.description.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-3">
+                                                        <p>Цена товара</p>
+                                                        <Input type="number" {...productRegister("price")} aria-invalid={productErrors.price ? "true" : "false"} className={`mt-1 max-h-60 ${productErrors.price ? "border-red-600 bg-red-200" : ""}`} placeholder="Введите цену для товара"></Input>
+                                                        {productErrors.price && (
+                                                            <p className="text-red-500">{productErrors.price.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-3">
+                                                        <p>Картинка товара</p>
+                                                        <Input multiple={false} type="file" {...productRegister("file")} aria-invalid={productErrors.file ? "true" : "false"} className={`mt-1 max-h-60 ${productErrors.file ? "border-red-600 bg-red-200" : ""}`} placeholder="Добавте картинку для товара"></Input>
+                                                        {productErrors.file && (
+                                                            <p className="text-red-500">{productErrors.file.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <Button className="mt-4 w-full">{addproducts.isPending ? <Spinner/> : "добавить"}</Button>
+                                                </form>
+                                                {addproducts.error && (
+                                                    <Alert className="bg-red-200 border-red-500">
+                                                        <AlertTitle className="text-red-500">{addproducts.error.message}</AlertTitle>
+                                                    </Alert>
+                                                )}
+                                                {addproducts.isSuccess && (
+                                                    <Alert className="bg-green-200 border-green-500">
+                                                        <AlertTitle className="text-green-500">{addproducts.data.message}</AlertTitle>
+                                                    </Alert>
+                                                )}
+                                            </DialogHeader>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                             </CardTitle>
                         </CardHeader>
