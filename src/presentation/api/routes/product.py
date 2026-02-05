@@ -9,7 +9,7 @@ from src.service.product_service import ProductService
 
 product_router = APIRouter(prefix="/products", tags=["Product"])
 
-@product_router.post("", summary="Добавить продукт")
+@product_router.post("add", summary="Добавить продукт")
 async def add_product(
     session: SessionDep,
     _: HTTPAuthorizationCredentials = Depends(bearer_scheme),
@@ -27,7 +27,7 @@ async def add_product(
         file=file
     )
 
-@product_router.get("", summary="Получить все продукты")
+@product_router.get("get", summary="Получить все продукты")
 async def get_all_products(
     session: SessionDep,
     limit: int = Query(16, ge=1, le=40),
