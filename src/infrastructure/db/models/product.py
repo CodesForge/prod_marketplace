@@ -12,6 +12,6 @@ class ProductOrm(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
     description: Mapped[str] = mapped_column(String(2000), nullable=False)
-    price: Mapped[float] = mapped_column(nullable=False)
+    price: Mapped[str] = mapped_column(nullable=False)
     s3_image_key: Mapped[str] = mapped_column(String(500), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

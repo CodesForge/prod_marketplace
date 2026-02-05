@@ -42,7 +42,7 @@ class S3Client:
                     Body=file_content 
                 )
                 
-            file_url = f"https://s3.ru1.storage.beget.cloud/{self.bucket_name}/{file.filename}"
+            file_url = f"https://69ef73c9-213a-4522-92a6-a6c848f627f7.selstorage.ru/{file.filename}"
             logger.info("Файл успешно загружен")
             
             return file_url

@@ -16,7 +16,7 @@ async def add_product(
     payload: TokenPayload = Depends(authx_service.access_token_required),
     title: str = Form(...),
     description: str = Form(...),
-    price: float = Form(...),
+    price: str = Form(...),
     file: UploadFile = File(...)
 ):
     return await ProductService.add_product(
