@@ -99,3 +99,37 @@ class ProductRepository:
         except Exception as exc:
             logger.exception(f"Неизвестная ошибка при получении товаров: {exc}")
             raise
+
+    @staticmethod
+    async def get_product_by_id(
+        session: AsyncSession,
+        id: int,
+    ):
+        try:    
+            stmt = select(ProductOrm).where(ProductOrm.id == id)
+            result = await session.execute(stmt)
+            product = result.scalar_one_or_none()
+
+            if not product:
+                logger.warning(f"Товар с id: {id} не найден")
+                raise ValueError(f"Товар с id: {id} не найден")
+
+            logger.info("Продукт успешно получен")
+            return {
+                "message": "Продукт успешно получен",
+                "product": {
+                    "title": product.title,
+                    "description": product.description,
+                    "price": product.price,
+                    "s3_image_key": product.s3_image_key,
+                    "created_at": product.created_at
+                },
+                "status": "success"
+            }
+        except SQLAlchemyError as exc:
+            logger.exception(f"Ошибка базы данных при получении товара: {exc}")
+            raise
+        
+        except Exception as exc: 
+            logger.exception(f"Неизвестная ошибка при получении товара: {exc}")
+            raise

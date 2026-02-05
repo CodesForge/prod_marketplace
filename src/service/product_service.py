@@ -70,3 +70,30 @@ class ProductService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Неизвестная ошибка при получении товаров: {exc}"
             )
+
+    @staticmethod
+    async def get_product_by_id(
+        session: AsyncSession,
+        id: int
+    ):
+        try:
+            return await ProductRepository.get_product_by_id(
+                session=session,
+                id=id
+            )
+
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(exc)
+            )
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Ошибка базы данных при получении товара: {exc}"
+            )
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Неизвестная ошибка при получении товара: {exc}"
+            )

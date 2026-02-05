@@ -38,3 +38,13 @@ async def get_all_products(
         limit=limit,
         offset=offset
     )
+
+@product_router.get("/get-product", summary="Получить продукт по айди")
+async def get_product_by_id(
+    session: SessionDep,
+    id: int = Query(1, ge=1)
+):
+    return await ProductService.get_product_by_id(
+        session=session,
+        id=id
+    )
