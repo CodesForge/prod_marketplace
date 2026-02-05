@@ -1,3 +1,4 @@
+import { useAuth } from "@/app/store/auth";
 
 export async function loginAdmin(data: { username: string, password: string }) {
     try {
@@ -6,6 +7,7 @@ export async function loginAdmin(data: { username: string, password: string }) {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify(data),
         });
         if (!response.ok) {
@@ -13,7 +15,7 @@ export async function loginAdmin(data: { username: string, password: string }) {
         }
         const result = await response.json()
         if (result?.access_token) {
-            localStorage.setItem("access_token", result.access_token)
+            useAuth.getState().setToken(result.access_token)
         }
         return result
     } catch (error) {

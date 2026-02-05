@@ -22,8 +22,11 @@ function DashBoard() {
         resolver: zodResolver(AdminAddSchema),
     });
 
+    const limit = 10;
+    const offset = 0;
+
     const addmutate = useAddAdmin();
-    const { admin_data, admin_error } = useGetAdmins();
+    const { admin_data, admin_error } = useGetAdmins({ limit, offset });
     const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
 
