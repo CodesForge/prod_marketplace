@@ -8,3 +8,4 @@ pydantic[email]
 secure-python-utils==0.1.4
 aiobotocore
 python-multipart
+prometheus_fastapi_instrumentator

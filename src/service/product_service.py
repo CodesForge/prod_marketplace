@@ -14,7 +14,11 @@ class ProductService:
         session: AsyncSession,
         title: str,
         description: str,
-        price: float,
+        price: str,
+        wb_url: str,
+        ozon_url: str,
+        market_url: str,
+        animal_type: str,
         file: UploadFile
     ):
         try:    
@@ -23,7 +27,11 @@ class ProductService:
             product = ProductSchema(
                 title=title,
                 description=description,
-                price=price
+                price=price,
+                wb_url=wb_url,
+                ozon_url=ozon_url,
+                market_url=market_url,
+                animal_type=animal_type
             )
             
             return await ProductRepository.add_product(
@@ -98,4 +106,31 @@ class ProductService:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Неизвестная ошибка при получении товара: {exc}"
+            )
+    
+    @staticmethod
+    async def get_all_animal(
+        session: AsyncSession,
+        animal_type: str
+    ):
+        try:
+            return await ProductRepository.get_all_animal(
+                session=session,
+                animal_type=animal_type
+            )
+
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=str(exc)
+            )
+        except SQLAlchemyError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Ошибка базы данных при получении товаров: {exc}"
+            )
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Неизвестная ошибка при получении товаров: {exc}"
             )

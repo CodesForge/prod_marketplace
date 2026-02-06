@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from src.infrastructure.db.session import DataBaseConfig
 from src.infrastructure.db.models.admin import AdminsOrm
@@ -42,6 +43,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+Instrumentator().instrument(app).expose(app)
+
 
 @app.get("/health", summary="Проверить состояние сайта", tags=["Health"])
 async def health_check():

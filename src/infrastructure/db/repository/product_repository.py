@@ -18,7 +18,11 @@ class ProductRepository:
                 title = product.title,
                 description = product.description,
                 price = product.price,
-                s3_image_key = link
+                s3_image_key = link,
+                wb_url = product.wb_url,
+                ozon_url = product.ozon_url,
+                market_url = product.market_url,
+                animal_type = product.animal_type
             )
             
             session.add(new_product)
@@ -86,7 +90,6 @@ class ProductRepository:
                         "description": product.description,
                         "price": product.price,
                         "s3_image_key": product.s3_image_key,
-                        "created_at": product.created_at
                     }
                 for product in products],
                 "total": total,
@@ -122,7 +125,11 @@ class ProductRepository:
                     "description": product.description,
                     "price": product.price,
                     "s3_image_key": product.s3_image_key,
-                    "created_at": product.created_at
+                    "created_at": product.created_at,
+                    "wb_url": product.wb_url,
+                    "ozon_url": product.ozon_url,
+                    "market_url": product.market_url,
+                    "animal_type": product.animal_type,
                 },
                 "status": "success"
             }
@@ -132,4 +139,38 @@ class ProductRepository:
         
         except Exception as exc: 
             logger.exception(f"Неизвестная ошибка при получении товара: {exc}")
+            raise
+
+    @staticmethod
+    async def get_all_animal(
+        session: AsyncSession,
+        animal_type: str
+    ):
+        try:    
+            stmt = select(ProductOrm).where(ProductOrm.animal_type == animal_type)
+            result = await session.execute(stmt)
+            animals = result.scalars().all()
+
+            if not animals:
+                logger.warning(f"Продукты с животным {animal_type} не найдены")
+                raise ValueError(f"Продукты с животным {animal_type} не найдены")
+
+            logger.info("Товары найдены")
+
+            return {
+                "animal": [
+                    {
+                    "id": animal.id,
+                    "title": animal.title,
+                    "description": animal.description,
+                    "price": animal.price,
+                    "s3_image_key": animal.s3_image_key,
+                }
+                for animal in animals]
+            }
+        except SQLAlchemyError as exc:
+            logger.exception(f"Ошибка базы данных при получении товаров: {exc}")
+            raise 
+        except Exception as exc:
+            logger.exception(f"Неизвестная ошибка при получении товаров: {exc}")
             raise

@@ -14,4 +14,8 @@ class ProductOrm(Base):
     description: Mapped[str] = mapped_column(String(2000), nullable=False)
     price: Mapped[str] = mapped_column(nullable=False)
     s3_image_key: Mapped[str] = mapped_column(String(500), nullable=False)
+    wb_url: Mapped[str] = mapped_column(String(50), nullable=False)
+    ozon_url: Mapped[str] = mapped_column(String(50), nullable=False)
+    market_url: Mapped[str] = mapped_column(String(50), nullable=False)
+    animal_type: Mapped[str] = mapped_column(String(20), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
