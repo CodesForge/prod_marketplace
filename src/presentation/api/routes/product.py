@@ -17,10 +17,6 @@ async def add_product(
     title: str = Form(...),
     description: str = Form(...),
     price: str = Form(...),
-    wb_url: str = Form(...),
-    ozon_url: str = Form(...),
-    market_url: str = Form(...),
-    animal_type: str = Form(...),
     file: UploadFile = File(...)
 ):
     return await ProductService.add_product(
@@ -28,10 +24,6 @@ async def add_product(
         title=title,
         description=description,
         price=price,
-        wb_url=wb_url,
-        ozon_url=ozon_url,
-        market_url=market_url,
-        animal_type=animal_type,
         file=file
     )
 
@@ -57,12 +49,12 @@ async def get_product_by_id(
         id=id
     )
 
-@product_router.get("/get-animal", summary="Отфильтровать товары по животному")
-async def get_all_animal(
-    sesseon: SessionDep,
-    animal_type: str = Query(min_length=2, max_length=20)
-):
-    return await ProductService.get_all_animal(
-        session=sesseon,
-        animal_type=animal_type
-    )
+# @product_router.get("/get-animal", summary="Отфильтровать товары по животному")
+# async def get_all_animal(
+#     sesseon: SessionDep,
+#     animal_type: str = Query(min_length=2, max_length=20)
+# ):
+#     return await ProductService.get_all_animal(
+#         session=sesseon,
+#         animal_type=animal_type
+#     )
