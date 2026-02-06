@@ -5,6 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 export function useAddProducts() {
     const mutation = useMutation({
         mutationFn: (data: AddProductsTypeSchema) => AddProducts(data),
+        onSuccess: () => {
+
+        },
     });
     return mutation
 }

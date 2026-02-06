@@ -72,16 +72,13 @@ export default function Page() {
             <div className="flex w-full justify-items-center items-center flex-col gap-5">
                 <div className="flex flex-wrap items-center gap-6 mt-5">
                     <div className="bg-[#F3F4F6] rounded-[7px] flex p-1">
-                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
-                        О нас
-                        </Button>
-                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        <Button onClick={() => router.push("/products")} className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
                         Продукты
                         </Button>
-                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        <Button onClick={() => router.push("/compound")} className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
                         Состав
                         </Button>
-                        <Button className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
+                        <Button onClick={() => router.push("/FAQ")} className="bg-transparent text-neutral-800 px-6 py-3 h-auto hover:bg-white hover:shadow-sm transition-all duration-200 font-normal rounded-[5px]">
                         FAQ
                         </Button>
                     </div>
@@ -89,7 +86,7 @@ export default function Page() {
         О компании
     </Button>
     
-    <Button className="bg-[#06B2D3] text-white px-7 py-3 h-auto hover:bg-[#059DB9] active:scale-95 transition-all rounded-[7px] font-normal shadow-sm hover:shadow-md">
+    <Button onClick={() => router.push("/partners")} className="bg-[#06B2D3] text-white px-7 py-3 h-auto hover:bg-[#059DB9] active:scale-95 transition-all rounded-[7px] font-normal shadow-sm hover:shadow-md">
         Партнерам
     </Button>
 </div>

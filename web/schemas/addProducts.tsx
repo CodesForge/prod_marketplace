@@ -10,6 +10,7 @@ export const AddProductsSchema = z.object({
     price: z.string()
         .min(0, "цена должна быть не меньше 0"),
     file: z.any().refine((files) => files?.length > 0, "Файл нужен!")
+    
 });
 
 export type AddProductsTypeSchema = z.infer<typeof AddProductsSchema>;

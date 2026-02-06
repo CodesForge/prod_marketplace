@@ -4,6 +4,8 @@ import { useAddAdmin } from "@/app/hooks/useAddAdmin"
 import { useAddProducts } from "@/app/hooks/useAddProducts"
 import { useGetAdmins } from "@/app/hooks/useGetAdmins"
 import { useGetFeedback } from "@/app/hooks/useGetFeedback"
+import { useGetOneAdmin } from "@/app/hooks/useGetOneAdmin"
+import { useGetProducts } from "@/app/hooks/useGetProducts"
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,12 +40,18 @@ function DashBoard() {
 
     const addproducts = useAddProducts();
     const addmutate = useAddAdmin();
+    const { OneAdminData, OneAdminError } = useGetOneAdmin(); 
+    const { DataProducts, ErrorProducts } = useGetProducts();
     const { admin_data, admin_error } = useGetAdmins({ limit, offset });
     const { data, error } = useGetFeedback();
     const [activeTab, setActiveTab] = useState<'admin' | 'goods' | 'feedback' | null>(null);
 
     const onSubmitProducts = (data: any) => {
-        addproducts.mutate(data);
+        addproducts.mutate(data, {
+            onSuccess: () => {
+                productReset();
+            }
+        });
     }
 
     const OnSubmit = (data: AdminTypeSchema) => {
@@ -63,7 +71,9 @@ function DashBoard() {
                         <div className="bg-neutral-200 p-1 rounded-2xl">
                             <User/>
                         </div>
-                        <CardTitle>Пользователь</CardTitle>
+                        <CardTitle>
+                            @{OneAdminData?.admin?.username ?? "Пользователь"}
+                        </CardTitle>
                     </div>
                 </CardHeader>
             </Card>
@@ -215,7 +225,73 @@ function DashBoard() {
                                             </DialogHeader>
                                         </DialogContent>
                                     </Dialog>
-                                </div>
+                                    </div>
+                                        {data && (
+                                        <div>
+                                            {DataProducts?.products?.map((item) => (
+                                                <div key={item.id} className="mt-3 bg-neutral-100 rounded-[5px] p-2 border-2 flex flex-row justify-between items-center">
+                                                    <div className="flex flex-col">
+                                                        <p>Заголовок: {item.title}</p>
+                                                        <p>Описание: {item.description}</p>
+                                                        <p>Цена: {item.price} ₽</p>
+                                                    </div>
+                                                    <div>
+                                                        <Dialog>
+                                                            <DialogTrigger asChild>
+                                                                <Button className="bg-white border-neutral-300 text-black hover:bg-neutral-100 text-sm">
+                                                                    Посмотреть товар
+                                                                </Button>
+                                                            </DialogTrigger>
+                                                            <DialogContent className="max-w-lg rounded-2xl">
+                                                                <DialogHeader className="space-y-2">
+                                                                    <DialogTitle className="text-[18px]">
+                                                                        {item.title}
+                                                                    </DialogTitle>
+                                                                    <DialogDescription className="text-[13px]">
+                                                                        ID: {item.id}
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+
+                                                                <div className="mt-2 flex flex-col gap-4">
+                                                                    <div className="w-full overflow-hidden rounded-xl border bg-neutral-50">
+                                                                        <img
+                                                                            src={item.s3_image_key}
+                                                                            alt={item.title}
+                                                                            className="w-full h-90 object-cover"
+                                                                            />
+                                                                    </div>
+
+                                                                <div className="space-y-2 text-[14px]">
+                                                                <div>
+                                                                    <p className="text-neutral-500 text-xs uppercase">Описание</p>
+                                                                    <p className="text-neutral-800 whitespace-pre-line">
+                                                                        {item.description}
+                                                                    </p>
+                                                                </div>
+
+                                                                <div className="flex items-center justify-between">
+                                                                    <div>
+                                                                        <p className="text-neutral-500 text-xs uppercase">Цена</p>
+                                                                        <p className="text-[16px] font-semibold">
+                                                                            {item.price} ₽
+                                                                        </p>
+                                                                    </div>
+                                                                <div className="text-right">
+                                                                    <p className="text-neutral-500 text-xs uppercase">Создан</p>
+                                                                    <p className="text-[12px] text-neutral-700">
+                                                                        {new Date(item.created_at).toLocaleString("ru-RU")}
+                                                                    </p>
+                                                                </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                             </CardTitle>
                         </CardHeader>
                     </Card>

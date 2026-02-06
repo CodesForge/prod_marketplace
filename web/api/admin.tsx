@@ -2,7 +2,7 @@ import { useAuth } from "@/app/store/auth";
 
 export async function loginAdmin(data: { username: string, password: string }) {
     try {
-        const response = await fetch("/api/admins/login", {
+        const response = await fetch("http://localhost/api/admins/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

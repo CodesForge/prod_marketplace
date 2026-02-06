@@ -73,10 +73,10 @@ export default function Page() {
                         </Button>
                     </div>
                     <div className="rounded-[7px] flex h-full gap-2 ml-auto">
-                        <Button className="bg-[#F3F4F6] text-neutral-800 px-6 py-3 h-auto hover:bg-[#EAEBED] transition-colors rounded-[7px] font-normal">
+                        <Button onClick={() => router.push("/company")} className="bg-[#F3F4F6] text-neutral-800 px-6 py-3 h-auto hover:bg-[#EAEBED] transition-colors rounded-[7px] font-normal">
                             О компании
                         </Button>
-                        <Button onClick={() => router.push("/partners")} className="bg-[#06B2D3] text-white px-6 py-3 h-auto hover:bg-[#059DB9] active:scale-95 transition-all rounded-[7px] font-normal shadow-sm hover:shadow-md">
+                        <Button className="bg-[#06B2D3] text-white px-6 py-3 h-auto hover:bg-[#059DB9] active:scale-95 transition-all rounded-[7px] font-normal shadow-sm hover:shadow-md">
                         Партнерам
                         </Button>
                     </div>
@@ -84,58 +84,42 @@ export default function Page() {
             </header>
             <div className="flex flex-col items-center justify-center flex-1 p-12">
                 <div className="text-[55px] max-w-7xl">
-                    <p className="text-center">О компании WellWet</p>
-                    <CardDescription className="mt-3 text-center text-2xl">WellWet — бренд holistic-кормов для собак и кошек. Мы создаём питание для ежедневного рациона, с фокусом на качество ингредиентов, понятный состав и реальные потребности питомцев. Наши рецепты помогают поддерживать общее состояние здоровья без лишних добавок и компромиссов.</CardDescription>
+                    <p className="text-center">FAQ</p>
+                    <CardDescription className="mt-3 text-center text-2xl">Вопросы, которые вы стеснялись задать (а мы не стеснялись ответить)</CardDescription>
                 </div>
                 <div className="w-full flex flex-col gap-6">
                     <Card className="w-full bg-[#F5F5F5] rounded-[10px] mt-10">
                         <CardHeader>
-                            <CardTitle className="text-[24px]">Как мы подходим к питанию</CardTitle>
+                            <CardTitle className="text-[24px]">Ваш корм — это то же самое, что я просто свалю мясо из супермаркета в миску?</CardTitle>
                             <CardDescription className="text-[16px]">
-                                Мы уверены, что основа хорошего корма — прозрачный состав. В рецептах WellWet используются натуральные источники животного белка и сбалансированные формулы для регулярного рациона. Мы исключаем искусственные красители, ароматизаторы и усилители вкуса.
+                                Почти, но с важными "но". Мы — как ваш личный диетолог и повар для питомца в одном флаконе. Мы не просто даем мясо, мы создаем сбалансированный рацион с нужными витаминами, минералами, субпродуктами и овощами. То, что нужно добавить к стейку, чтобы хвостатый был здоров, а не просто сыт. Вы же не питаетесь одним только хлебом, верно?
                             </CardDescription>
                         </CardHeader>
                     </Card>
                     <Card className="w-full bg-[#F5F5F5] rounded-[10px]">
                         <CardHeader>
-                            <CardTitle className="text-[24px]">Ингредиенты и качество</CardTitle>
+                            <CardTitle className="text-[24px]"> А если моя кошка — привереда, а собака думает, что она тоже кошка и привередничает?</CardTitle>
                             <CardDescription className="text-[16px]">
-                                Каждый рецепт разрабатывается с учётом усвояемости и комфорта пищеварения. В линейке используются low-grain и беззерновые формулы. Компоненты подбираются так, чтобы корм подходил для собак и кошек разных пород и размеров.
+                                Наш девиз: "Уговорим любого". У нас есть разные линейки (мясное ассорти, птичий рай, рыбный день), а также пробные мини-наборы. 98% усатых-хвостатых сдаются после третьей попытки. Остальные 2% — особая каста, для них у нас есть секретное оружие — консультация с нашим зоотехником.
                             </CardDescription>
                         </CardHeader>
                     </Card>
                     <Card className="w-full bg-[#F5F5F5] rounded-[10px]">
                         <CardHeader>
-                            <CardTitle className="text-[24px]">Открытость и доверие</CardTitle>
+                            <CardTitle className="text-[24px]"> Это правда на 100% натурально? Никаких "эквивалентов", "ароматизаторов, идентичных натуральному" и прочей алхимии?</CardTitle>
                             <CardDescription className="text-[16px]">
-                                Мы честно рассказываем о составе и принципах производства. Вы всегда понимаете, из чего состоит корм и зачем нужен каждый ингредиент. Для нас доверие строится на свойствах продукта, а не на громких формулировках.
+                                Клянемся мисками и хвостами! В составе только то, что вы можете понять без докторской степени по химии: мясо, сердце, печень, морковь, яблоко... Никаких загадочных "продуктов растительного происхождения" или "субпродуктов" без расшифровки. Мы сами кормим своих питомцев этим же кормом, поэтому тут все честно.
                             </CardDescription>
                         </CardHeader>
                     </Card>
-                    <div className="flex flex-row gap-6">
-                        <Card className="w-full bg-[#F5F5F5] rounded-[10px]">
-                            <CardHeader>
-                                <CardTitle className="text-[24px]">Кому подойдёт WellWet</CardTitle>
-                                <CardDescription className="text-[16px]">
-                                    <p>Наши корма выбирают:</p>
-                                    <ul>
-                                        <li> • владельцы собак и кошек</li>
-                                        <li> • владельцы взрослых питомцев</li>
-                                        <li> • питомцы с чувствительным пищеварением</li>
-                                        <li> • те, кто внимательно относится к составу корма</li>
-                                    </ul>
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-                        <Card className="w-full bg-[#F5F5F5] rounded-[10px]">
-                            <CardHeader>
-                                <CardTitle className="text-[24px]">Сбалансированное питание на каждый день</CardTitle>
-                                <CardDescription className="text-[16px]">
-                                    Holistic-подход основан на балансе. Рецепты WellWet создаются так, чтобы ингредиенты дополняли друг друга и поддерживали здоровье питомца сегодня и в долгосрочной перспективе. Корм закрывает ежедневные потребности без дополнительных добавок.
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
-                    </div>
+                    <Card className="w-full bg-[#F5F5F5] rounded-[10px]">
+                        <CardHeader>
+                            <CardTitle className="text-[24px]">Почему у вас нет корма со вкусом "утка под апельсиновым соусом" или "лосось на углях"?</CardTitle>
+                            <CardDescription className="text-[16px]">
+                                Потому что мы уважаем вкусовые рецепторы животных. Им не нужны сложные соусы — им нужно качественное мясо. Наши "вкусы" — это виды мяса (говядина, кролик, индейка). Все гениальное просто. Хотя идею с "уткой" берем на карандаш... Шутка!
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
                 </div>
                 <div className="flex flex-col items-center justify-center flex-1 p-12">
                     <div className="text-[55px] max-w-4xl">
