@@ -6,7 +6,7 @@ export type GetProductParams = {
 }
 
 export async function GetProduct(params?: GetProductParams): Promise<GetProductResponse> {
-    const response = await api.get<GetProductResponse>("/api/products/get-product", {
+    const response = await api.get<GetProductResponse>("/products/get-product", {
         params,
     });
     return response.data;
