@@ -128,13 +128,13 @@ export default function Page({ params }: Props) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3">
-                  <Button className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
+                  <Button onClick={() => window.open('https://www.wildberries.ru/brands/miratorg', '_blank', 'noopener,noreferrer')} className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
                     открыть на ozon
                   </Button>
-                  <Button className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
+                  <Button onClick={() => window.open('https://www.ozon.ru/brand/miratorg-137844500/?all_items=true', '_blank', 'noopener,noreferrer')} className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
                     открыть на wb
                   </Button>
-                  <Button className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
+                  <Button onClick={() => window.open('https://market.yandex.ru/search?text=%D0%BC%D0%B8%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%B3%20%D0%BA%D0%BE%D1%80%D0%BC&hid=15685457&hid=15685787&hid=12718332&rs=eJwzWs2olMwleWHPhR0XGy5suNh0YR-Q3qxwYReYsUfg2KOHzEosHAwCHGCSAUJqMGTh1lPFYWhiYmZsbGHUwLj3KGsXIxMHQxUrx8V1e9k3MDJ8YlQEmrDwEKsEgwJISGH2RiDxZ2EHmwaIqwHi_mUsNWaz72Vq93ezn8r0eZGN_QomkCQAE_xIvQ%2C%2C&rt=11&glfilter=7893318%3A14463382', '_blank', 'noopener,noreferrer')} className="h-10 px-4 uppercase bg-[#06B2D3] text-white transition-colors duration-200 hover:bg-[#0599B7]">
                     на Яндекс Маркете
                   </Button>
                 </div>
