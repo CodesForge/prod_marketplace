@@ -18,10 +18,7 @@ class ProductRepository:
                 title = product.title,
                 description = product.description,
                 price = product.price,
-                s3_image_key = link,
-                wb_url = product.wb_url,
-                ozon_url = product.ozon_url,
-                market_url = product.market_url 
+                s3_image_key = link, 
             )
             
             session.add(new_product)
