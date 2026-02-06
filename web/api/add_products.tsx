@@ -8,7 +8,7 @@ export async function AddProducts(data: AddProductsTypeSchema): Promise<Products
     formData.append('description', data.description);
     formData.append('price', data.price);
     formData.append('file', data.file[0]);
-    const response = await api.post<ProductsResponseType>("/api/products/add", formData, {
+    const response = await api.post<ProductsResponseType>("/products/add", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         }

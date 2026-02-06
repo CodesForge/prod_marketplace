@@ -6,7 +6,7 @@ export type GetAdminParams = {
 }
 
 export async function GetAdmin(params?: GetAdminParams): Promise<GetAdminType> {
-    const response = await api.get<GetAdminType>("/api/admins/get", {
+    const response = await api.get<GetAdminType>("/admins/get", {
         params,
     });
     return response.data;
