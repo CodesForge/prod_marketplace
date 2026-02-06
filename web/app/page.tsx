@@ -95,7 +95,7 @@ export default function Page() {
                         <CardTitle className="text-5xl leading-snug">Сухой полнорационный корм холистик для щенков, взрослых собак и кошек holistic</CardTitle>
                         <CardDescription className="mt-5 text-[18px] text-neutral-800">В полной мере обеспечивает физиологические потребности животных в питательных веществах, необходимых для поддержания нормальной жизнедеятельности их организма.</CardDescription>
                         <div className="flex items-start">
-                            <Button className="p-7 mt-8 bg-[#06B2D3] hover:bg-[#059DB9] text-white font-normal transition-all duration-300 active:scale-95 group">
+                            <Button onClick={() => router.push("/products")} className="p-7 mt-8 bg-[#06B2D3] hover:bg-[#059DB9] text-white font-normal transition-all duration-300 active:scale-95 group">
                             Выбрать корм 
                             <div className="bg-white rounded-[5px] w-8 h-8 flex items-center justify-center ml-3 transition-transform duration-300 group-hover:translate-x-1">
                                 <ArrowRight style={{ strokeWidth: 3 }} className="text-[#06B2D3]"/>
